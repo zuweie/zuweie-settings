@@ -5,18 +5,22 @@ use Illuminate\Support\Facades\DB;
 class Settings {
     
     
-    public static function get_value_by_key ($key,  $default='', $callback=null) {
+    public static function get_value_by_key ($key,  $default='', $callback=null, $hasKey=false) {
+        
         $setting = DB::table('admin_ext_settings')->where('key', $key)->first();
+        $value = $default;
         if ($setting) {
             if ($callback){
-                return $callback($setting);
+               $value = $callback($setting->value);
             }
-            return $setting->value;
+            $value = $setting->value;
         }
-        return $default;
+        if ($hasKey)
+            return [$key=>$value];
+        return $value;
     }
     
-    public static function get_values_by_keys($keys, $default=[], $callback=null) {
+    public static function get_values_by_keys($keys, $default=[], $callback=null, $hasKey=false) {
         
         if (!is_array($keys)) $keys = [$keys];
         
@@ -38,7 +42,7 @@ class Settings {
         
     }
     
-    public static function get_values_by_tags($tags, $defalut=[], $callback=null) {
+    public static function get_values_by_tags($tags, $defalut=[], $callback=null, $hasKey=false) {
         
         $settings = DB::table('admin_ext_settings')->where('tags', 'like', '%'.tags.'%')->get();
         
@@ -63,6 +67,8 @@ class Settings {
         
     }
     
-    
+    public static function to_map ($setting) {
+        return [];
+    }
 }
 ?>
