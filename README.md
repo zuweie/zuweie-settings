@@ -28,7 +28,7 @@ php artisan migrate
 - 在配置列表添加你想要的配置。键值只能出现一次，不能重复，重复的键值无法写入数据库。
 
 #### 读数据
-- use Zuweie\Setting\Settings;
+- use Zuweie\Setting\Settings
 - 使用可以使用的接口
 
 ### 完了
