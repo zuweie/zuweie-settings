@@ -6,7 +6,10 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Admin;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
 use Zuweie\Setting\Settings;
+
 class SettingController extends Controller
 {
     public function index(Content $content)
@@ -21,8 +24,8 @@ class SettingController extends Controller
        $tags = request('tags', '');
        
         return $content
-            ->title('Title')
-            ->description('Description')
+            ->title('通用配置')
+            ->description('组件')
             ->body(view('setting::index', ['tags'=>$tags]));
     }
     
@@ -35,6 +38,13 @@ class SettingController extends Controller
             $alias = request('alias');
             $tags = request('tags');
             $value = request('value');
+            
+            $update_data = [];
+            
+            !empty($key) &&  $update_data['key'] = $key;
+            !empty($alias) && $update_data['alias'] = $alias;
+            !empty($tags) && $update_data['tags'] = $tags;
+            !empty($value) && $update_data['value'] = $value;
             
             count($update_data) > 0 && $res = Settings::update_setting($id, $key, $alias, $tags, $value);
             return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>$update_data]);
@@ -68,6 +78,10 @@ class SettingController extends Controller
         $id = Settings::create_setting($key, $alias, $tags, $value);
         
         $default_setting['id'] = $id;
+        $default_setting['key'] = $key;
+        $default_setting['alias'] = $alias;
+        $default_setting['tags'] = $tags;
+        $default_setting['value'] = $value;
         
         if ($id > 0) {
             return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>$default_setting]);
@@ -78,12 +92,15 @@ class SettingController extends Controller
     
     public function deleteSettings () {
          $ids = request('ids');
-         //$res = DB::table('admin_ext_settings')->whereIn('id', $ids)->delete();
          $res = Settings::delete_settings($ids);
          return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>[]]);
     }
-    
-    protected function randomKey ($length = 16) {
-        
+    /*
+    public function debugCache() {
+        $value = Settings::get_value_by_key('bbb', function($setting){
+            return Settings::split_value($setting);
+        }, false);
+        return response()->json(['data'=>$value]);
     }
+    */
 }

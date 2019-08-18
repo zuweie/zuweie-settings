@@ -2,6 +2,8 @@
 namespace Zuweie\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
 class Settings {
     
     // 加上cache，加快速度。
@@ -21,8 +23,12 @@ class Settings {
     protected  static function _get_setting_by_key($key) {
         $setting = Cache::get($key);
         if (empty($setting)) { 
+            Log::debug('_get_setting_by_key : miss cache');
             $setting = DB::table('admin_ext_settings')->where('key', $key)->first();
-            if ($setting) self::_set_key_cache($key, $setting);
+            if ($setting) {
+                self::_set_key_cache($key, $setting);
+                Log::debug('_get_setting_by_key : set setting cache');
+            }
         }
         return $setting;
     }
@@ -35,6 +41,7 @@ class Settings {
         
         if (empty($keys)) {
             // 如果没有key，则把key捞一遍。
+            Log::debug('_get_settings_by_tags : miss cache');
             $keys = [];
             $setting_keys = DB::table('admin_ext_settings')->select('key')->where('tags', $tags)->get();
             
@@ -42,6 +49,7 @@ class Settings {
                 array_push($keys, $setting_key->key);
             }
             self::_set_tags_cache($tags, $keys);
+            Log::debug('_get_settings_by_tags : set tags cache');
         }
         
         // 捞完了，获取setting。
@@ -53,17 +61,18 @@ class Settings {
     }
 
     
-    public static function get_value_by_key ($key,  $default='', $callback=null, $keepKey=false) {
+    public static function get_value_by_key ($key, $callback=null, $keepKey=false) {
         
         // TODO : get it from cache.
         $setting = self::_get_setting_by_key($key);
         
-        $value = $default;
+        $value = '';
         if ($setting) {
             if ($callback){
-               $value = $callback($setting);
+                $value = $callback($setting);
+            }else{
+                $value = $setting->value;
             }
-            $value = $setting->value;
         }
         if ($keepKey)
             return [$key=>$value];
@@ -75,7 +84,7 @@ class Settings {
         $default = [];
         foreach ($keys as $key) {
             
-            $setting = self::_get_setting_by_key(key);
+            $setting = self::_get_setting_by_key($key);
             if ($setting) {
                 if ($callback) {
                     $value  = $callback($setting);
@@ -105,7 +114,7 @@ class Settings {
             }
             
             if ($keepKey) {
-                $default[$key] = $value;
+                $default[$setting->key] = $value;
             }else{
                 $default[] = $value;
             }
@@ -171,18 +180,19 @@ class Settings {
         return $res;
     }
     
-    
-    
-    
     public static function split_value($setting, $split='') {
         $valuestring = $setting->value;
+        
         empty($split) && $split = '/[\s,]+/';
-        $values = preg_split($split, $valuestring, null, null);
+        $preg = '/^\/.*\/$/';
+        if (preg_match($preg, $split)) {
+            // 这个是使用正则的
+            $values = preg_split($split, $valuestring, null, null);
+        }else{
+            // 不是使用正则的
+            $values = explode($split, $valuestring);
+        }
         return $values;
-    }
-    
-    public static function to_map ($setting) {
-        return [];
     }
 }
 ?>
