@@ -2,7 +2,6 @@
     "name": "zuweie/settings",
     "description": "description...",
     "type": "library",
-    "version": "1.0.0",
     "keywords": ["laravel-admin", "extension"],
     "homepage": "",
     "license": "MIT",
