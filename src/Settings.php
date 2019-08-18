@@ -60,8 +60,14 @@ class Settings {
         return $settings;
     }
 
-    
-    public static function get_value_by_key ($key, $callback=null, $keepKey=false) {
+    /**
+     * 根据键名获取相应值
+     * @param string $key 键名。
+     * @param boolean $keepKey 是否以键值对的形式返回。     
+     * @param function $callback 对获取的值进行加工，例如将值进行分割。
+     * @return mixed
+     */
+    public static function get_value_by_key ($key,  $keepKey=false, $callback=null) {
         
         // TODO : get it from cache.
         $setting = self::_get_setting_by_key($key);
@@ -80,7 +86,14 @@ class Settings {
         return $value;
     }
     
-    public static function get_values_by_keys($keys, $callback=null, $keepKey=false) {
+    /**
+     * 根据过个键名，获取相应的键值
+     * @param array $keys 键名数据
+     * @param boolean $keepKey 是否以键值对的形式返回。
+     * @param function $callback 回调函数，对返回的值进行加工，例如将值进行分割。
+     * @return array 值的数组
+     */
+    public static function get_values_by_keys($keys, $keepKey=false, $callback=null) {
         $default = [];
         foreach ($keys as $key) {
             
@@ -102,7 +115,14 @@ class Settings {
         return $default;
     }
     
-    public static function get_values_by_tags($tags,  $callback=null, $keepKey=false) {
+    /**
+     * 根据tags获取相应的配置值。
+     * @param string $tags 标签
+     * @param boolean $keepKey 是否以键值对的形式返回。     
+     * @param function $callback 回调函数，对返回的值进行加工，例如将值进行分割。
+     * @return array 值的数组。
+     */
+    public static function get_values_by_tags($tags, $keepKey=false,  $callback=null) {
         
         $defalut=[];
         $settings = self::_get_settings_by_tags($tags);
