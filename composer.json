@@ -4,12 +4,12 @@
     "type": "library",
     "version": "1.0.0",
     "keywords": ["laravel-admin", "extension"],
-    "homepage": "https://github.com/laravel-admin-ext/setting",
+    "homepage": "",
     "license": "MIT",
     "authors": [
         {
-            "name": "your name",
-            "email": "your email"
+            "name": "zuweie",
+            "email": "51930595@qq.com"
         }
     ],
     "require": {
