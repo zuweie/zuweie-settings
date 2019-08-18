@@ -6,7 +6,6 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Admin;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 
 use Zuweie\Setting\Settings;
 
