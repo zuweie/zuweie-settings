@@ -6,7 +6,7 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Admin;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
-
+use Zuweie\Setting\Settings;
 class SettingController extends Controller
 {
     public function index(Content $content)
@@ -36,13 +36,7 @@ class SettingController extends Controller
             $tags = request('tags');
             $value = request('value');
             
-            $update_data = [];
-            !empty($key) && $update_data['key'] = $key;
-            !empty($alias) && $update_data['alias'] = $alias;
-            !empty($tags) && $update_data['tags'] = $tags;
-            !empty($value) && $update_data['value'] = $value;
-            
-            count($update_data) > 0 && $res = DB::table('admin_ext_settings')->where('id', $id)->update($update_data);
+            count($update_data) > 0 && $res = Settings::update_setting($id, $key, $alias, $tags, $value);
             return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>$update_data]);
         }
         return response()->json(['errcode'=>-1, 'errmsg'=> 'no found', 'data'=>[]]);
@@ -67,18 +61,12 @@ class SettingController extends Controller
     public function createSetting() {
         
        $tags = request('tags', 'tags');
-       $key = request('key', 'key');
+       $key = request('key', microtime());
        $alias = request('alias', 'alias');
        $value = request('value', 'value');
        
-        $default_setting = [
-                'key' => $key,
-                'tags' => $tags,
-                'alias' => $alias,
-                'value' => $value,
-        ];
+        $id = Settings::create_setting($key, $alias, $tags, $value);
         
-        $id = DB::table('admin_ext_settings')->insertGetId($default_setting);
         $default_setting['id'] = $id;
         
         if ($id > 0) {
@@ -89,8 +77,13 @@ class SettingController extends Controller
     }
     
     public function deleteSettings () {
-        $ids = request('ids');
-         $res = DB::table('admin_ext_settings')->whereIn('id', $ids)->delete();
+         $ids = request('ids');
+         //$res = DB::table('admin_ext_settings')->whereIn('id', $ids)->delete();
+         $res = Settings::delete_settings($ids);
          return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>[]]);
+    }
+    
+    protected function randomKey ($length = 16) {
+        
     }
 }

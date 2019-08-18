@@ -15,7 +15,7 @@ class CreateAdminSettingTable extends Migration
     {
         Schema::create('admin_ext_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key')->comment('key');
+            $table->string('key')->unique()->comment('key');
             $table->string('tags')->nullable()->comment('tags');
             $table->string('alias')->nullable()->comment(' alias for key');
             $table->text('value')->nullable()->comment('value');
