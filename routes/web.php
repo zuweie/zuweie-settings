@@ -6,6 +6,5 @@ Route::get('settingdata', SettingController::class.'@settingdata');
 Route::post('update/setting', SettingController::class.'@updateSetting');
 Route::post('create/setting', SettingController::class.'@createSetting');
 Route::delete('delete/settings', SettingController::class.'@deleteSettings');
-/*
+
 Route::get('debug/cache', SettingController::class.'@debugCache');
-*/

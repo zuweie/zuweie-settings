@@ -1,5 +1,5 @@
 	<div id="toolbar">
-		<button class="btn btn-success"  id="add-setting-item">添加{{ !empty($tags)? '<标签为'.$tags.'的设置>' : '' }}</button>
+		<button class="btn btn-success"  id="add-setting-item">添加{{ !empty($tags)? '<'.$tags.'>配置' : '配置' }}</button>
 		<button class="btn btn-danger" id="del-setting-item">删除</button>
 	</div>
     <table 

@@ -94,12 +94,17 @@ class SettingController extends Controller
          $res = Settings::delete_settings($ids);
          return response()->json(['errcode'=>0, 'errmsg'=>'', 'data'=>[]]);
     }
-    /*
+    
     public function debugCache() {
-        $value = Settings::get_value_by_key('bbb', function($setting){
-            return Settings::split_value($setting);
-        }, false);
+        $type = request('type', 'key');
+        $p1 = request('p1');
+        $p2 = request('p2');
+        if ($type == 'key') {
+            $value = Settings::get_value_by_key($p1, $p2, true);
+        }else {
+            $value = Settings::get_values_by_tags($p1, true);
+        }
         return response()->json(['data'=>$value]);
     }
-    */
+    
 }
