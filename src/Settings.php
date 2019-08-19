@@ -89,6 +89,7 @@ class Settings {
     /**
      * 根据键名获取相应值
      * @param string $key 键名。
+     * @param string $tags 对应tags，默认为空。
      * @param boolean $keepKey 是否以键值对的形式返回。     
      * @param function $callback 对获取的值进行加工，例如将值进行分割。
      * @return mixed
