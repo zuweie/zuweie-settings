@@ -51,6 +51,7 @@ php artisan migrate
      * @param function $callback 回调函数，对返回的值进行加工，例如将值进行分割。
      * @return array 值的数组。
      */
+     public static function get_values_by_tags($tags, $keepKey=false,  $callback=null) 
 ```
 
 ### 完了
