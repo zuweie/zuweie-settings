@@ -23,7 +23,7 @@ class SettingController extends Controller
        $tags = request('tags', '');
        
         return $content
-            ->title('通用配置')
+            ->header('通用配置')
             ->description('组件')
             ->body(view('setting::index', ['tags'=>$tags]));
     }
