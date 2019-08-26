@@ -40,26 +40,37 @@ php artisan migrate
 |wait|jpn|ちょっと待ってください|
 
 ```
-// get返回key的值，若没有传入tags的参数，返回一个以key为键值的值：
+/*------------------------------- get -----------------------------------*/
+
+// get返回key的值，若没有传入tags的参数，返回一个以key为键值的值
 Settings::get('hello')
 => 你好呀
 
+// 键值对形式返回
 Settings::get('hello', '', true)
 => ['hello'=>'你好呀']
 
 Settings::get('hello', 'jpn')
 => こんにちは
 
+// 键值对形式返回
 Settings::get('hello', 'jpn', true)
 => ['hello'=>'こんにちは']
 
+/*------------------------------- getMulit -----------------------------------*/
 // getMulit返回特定的tags的键值
+
 Settings::getMulit('zh')
 => ['你好呀', '等等‘]
 
 Settings::getMuilt('jpn')
 => ['こんにちは', 'ちょっと待ってください']
 
+Settings::getMulit('zh', true)
+=> ['hello'=>'你好呀', 'wait'=>'等等‘]
+
+Settings::getMulit('jpn', true)
+=> ['hello'=>'こんにちは', 'wait'=>'ちょっと待ってください']
 
 ```
 
