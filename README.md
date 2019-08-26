@@ -25,33 +25,13 @@ php artisan migrate
 #### 写数据
 - 打开地址：http://yourhost/admin/setting?tags=xxx, 传入参数tags，则显示当前tags的配置。例如tags=language_zh,打开language_zh的配置。若tags参数为空则返回全部的配置。
 
-- 在配置列表添加你想要的配置。键值只能出现一次，不能重复，重复的键值无法写入数据库。
+- 在配置列表添加你想要的配置。
 
 #### 读数据
 - use Zuweie\Setting\Settings
-- 两个主要代码上使用的接口
-- 1
 ```
-    /**
-     * 根据键名获取相应值
-     * @param string $key 键名。
-     * @param string $tags 对应tags，默认为空。
-     * @param boolean $keepKey 是否以键值对的形式返回。     
-     * @param function $callback 对获取的值进行加工，例如将值进行分割。
-     * @return mixed
-     */
-    public static function get_value_by_key ($key,  $tags='', $keepKey=false, $callback=null)
+   
 ```
-- 2
-```
-    /**
-     * 根据tags获取相应的配置值。
-     * @param string $tags 标签
-     * @param boolean $keepKey 是否以键值对的形式返回。     
-     * @param function $callback 回调函数，对返回的值进行加工，例如将值进行分割。
-     * @return array 值的数组。
-     */
-     public static function get_values_by_tags($tags, $keepKey=false,  $callback=null) 
-```
+
 
 ### 完了
