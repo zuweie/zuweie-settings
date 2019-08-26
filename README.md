@@ -58,14 +58,15 @@ Settings::get('hello', 'jpn', true)
 => ['hello'=>'こんにちは']
 
 /*------------------------------- getMulit -----------------------------------*/
-// getMulit返回特定的tags的键值
 
+// getMulit返回特定的tags的键值
 Settings::getMulit('zh')
 => ['你好呀', '等等‘]
 
 Settings::getMuilt('jpn')
 => ['こんにちは', 'ちょっと待ってください']
 
+// 键值对形式返回
 Settings::getMulit('zh', true)
 => ['hello'=>'你好呀', 'wait'=>'等等‘]
 
