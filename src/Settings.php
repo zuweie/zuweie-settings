@@ -9,7 +9,7 @@ class Settings {
     // 加上cache，加快速度。
     
     protected static function _get_key_cache($key) {
-        $key = Cache::get('key');
+        $key = Cache::get($key);
         empty($key) && Log::debug(__METHOD__.': miss setting at key '.$key);
         return $key;
     }
@@ -34,6 +34,7 @@ class Settings {
         Log::debug(__METHOD__.': set tags cache '.$tags);
         Cache::forever($tags, $keys);
     }
+    
     protected static function _del_tags_cache($tags) {
         Log::debug(__METHOD__.' delete tags cache '.$tags);
         Cache::forget($tags);
@@ -41,22 +42,28 @@ class Settings {
     
     protected  static function _get_setting_by_key($key, $tags='') {
         
-        $setting = self::_get_key_cache( !empty($tags)? $key.'-'.$tags: $key );
+        $settings = self::_get_key_cache( !empty($tags)? $key.'-'.$tags: $key );
         
-        if (empty($setting)) {
+        if (empty($settings)) {
             
             if (!empty($tags)) {
-                $setting = DB::table('admin_ext_settings')->where('key', $key)->where('tags', $tags)->first();
+                $settings = DB::table('admin_ext_settings')->where('key', $key)->where('tags', $tags)->get();
             }else{
-                $setting = DB::table('admin_ext_settings')->where('key', $key)->first();
+                $settings = DB::table('admin_ext_settings')->where('key', $key)->get();
             }
             
-            if (!empty($setting)) {
-                self::_set_key_cache(!empty($tags) ? $key.'-'.$tags : $key, $setting);
+            if ( count($settings) > 1) {
+                $settings = $settings->toArray();
+                self::_set_key_cache(!empty($tags) ? $key.'-'.$tags : $key, $settings);
+            }else if (count($settings) == 1) {
+                $settings = $settings->toArray()[0];
+                self::_set_key_cache(!empty($tags) ? $key.'-'.$tags : $key, $settings);
+            }else{
+                $settings = [];
             }
             
         }
-        return $setting;
+        return $settings;
     }
     
     protected static function _get_settings_by_tags($tags) {
@@ -89,13 +96,16 @@ class Settings {
     public static function get_value_by_key ($key,  $tags='', $keepKey=false, $callback=null) {
         
         // TODO : get it from cache.
-        $setting = self::_get_setting_by_key($key, $tags);
+        $settings = self::_get_setting_by_key($key, $tags);
         $value = '';
-        if ($setting) {
-            if ($callback){
-                $value = $callback($setting);
+        if ($settings) {
+            if (is_array($settings) && count($settings) > 1) {
+                $value = [];
+                foreach($settings as $setting) {
+                    array_push($value, !empty($callback) ? $callback($setting) : $setting->value);
+                }
             }else{
-                $value = $setting->value;
+                $value = !empty($callback) ? $callback($settings) : $settings->value;
             }
         }
         if ($keepKey)
@@ -109,14 +119,21 @@ class Settings {
         $default=[];
         $settings = self::_get_settings_by_tags($tags);
         foreach ($settings as $setting) {
-            if ($callback) {
-                $value = $callback($setting);
+            $key = '';
+            if (is_array($setting)) {
+                $value = [];
+                foreach ($setting as $s) {
+                    $key = $s->key;
+                    array_push($value, !empty($callback) ? $callback($s) : $s->value);
+                }
             }else{
-                $value = $setting->value;
+                $key    = $setting->key;
+                $value = !empty($callback) ? $callback($setting) : $setting->value;
             }
+           
             
             if ($keepKey) {
-                $default[$setting->key] = $value;
+                $default[$key] = $value;
             }else{
                 $default[] = $value;
             }
