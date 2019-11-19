@@ -1,7 +1,10 @@
 	<div id="toolbar">
 		<button class="btn btn-success"  id="add-setting-item">添加{{ !empty($tags)? '<'.$tags.'>配置' : '配置' }}</button>
 		<button class="btn btn-danger" id="del-setting-item">删除</button>
+		<button class="btn btn-info" id="refresh-setting-item">刷新</button>
 	</div>
+	<br>
+	<div id="tags-bar" ></div>
     <table 
     	data-toggle="table" 
     	id="setting-table"
@@ -104,7 +107,49 @@
 						console.log(res);
 					}
 				});
-           	    
             });
+
+			// refresh the item
+            $('#refresh-setting-item').click(function(){
+                window.location.href = window.location.href;
+            });
+
+			
+            // load the tagsbar
+            function loadTagsbar() {
+                $.get('/admin/settings/tags', function (tags) {
+                    var html = '<a class="btn btn-info" href="javascript:;" tags="" style="margin-right:3px;">全部</a>';
+					var i = 0;
+                    tags.forEach(function (e) {
+                        
+                        var ii = i++ % 4;
+                        var btn_style = 'btn-info';
+                        switch (ii) {
+                        case 0:
+                            btn_style = 'btn-success';
+                            break;
+                        case 1:
+                            btn_style = 'btn-primary';
+                            break;
+                        case 2:
+                            btn_style= 'btn-warning';
+                            break;
+                        case 3:
+                            break;
+                              
+                        }
+                        html += '<a class="btn '+btn_style+'" href="javascript:;" tags="'+e+'" style="margin-right:3px;">'+e+'</a>';
+                    });
+                   
+                    $('#tags-bar').html(html);
+                    $('div#tags-bar > a').each(function(){
+                        	$(this).click(function(){
+                            	window.location.href = "/admin/setting?tags="+$(this).attr('tags');
+                            });
+                    });
+                });
+            };
+			
+            loadTagsbar();
     });
     </script>

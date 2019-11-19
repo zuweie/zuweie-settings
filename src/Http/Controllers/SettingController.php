@@ -89,6 +89,14 @@ class SettingController extends Controller
         }
     }
     
+    public function getTags() {
+        $query = DB::table('admin_ext_settings')->select('tags')->groupBy('tags')->get();
+        foreach($query as $q) {
+            $tags[] = $q->tags;
+        }
+        return response()->json($tags);
+    }
+    
     public function deleteSettings () {
          $ids = request('ids');
          $res = Settings::delete_settings($ids);
